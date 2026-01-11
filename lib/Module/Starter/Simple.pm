@@ -418,7 +418,7 @@ sub Makefile_PL_guts {
     my $main_pm_file = shift;
 
     my $author = '[' . 
-       join(',', map { (my $x = $_) =~ s/'/\'/g; "'$x'" } @{$self->{author}}) 
+       join(',', map { (my $x = $_) =~ s/'/\\'/g; "'$x'" } @{$self->{author}}) 
        . ']';
     
     my $slname = $self->{license_record} ? $self->{license_record}->meta2_name : $self->{license};
@@ -522,8 +522,7 @@ sub MI_Makefile_PL_guts {
     my $main_module = shift;
     my $main_pm_file = shift;
 
-    my $author = join ',', @{$self->{author}};
-    $author =~ s/'/\'/g;
+    my $author = join(',', map { (my $x = $_) =~ s/'/\\'/g; "'$x'" } @{$self->{author}});
 
     my $license_url = $self->{license_record} ? $self->{license_record}->url : '';
 
@@ -540,8 +539,8 @@ use $warnings
 use inc::Module::Install;
 
 name     '$self->{distro}';
+author   $author;
 all_from '$main_pm_file';
-author   q{$author};
 license  '$self->{license}';
 
 perl_version '$self->{minperl}';
@@ -619,7 +618,7 @@ sub Build_PL_guts {
     my $main_pm_file = shift;
 
     my $author = '[' . 
-       join(',', map { (my $x = $_) =~ s/'/\'/g;  "'$x'" } @{$self->{author}}) 
+       join(',', map { (my $x = $_) =~ s/'/\\'/g;  "'$x'" } @{$self->{author}}) 
        . ']';
 
     my $slname = $self->{license_record} ? $self->{license_record}->meta2_name : $self->{license};
