@@ -250,8 +250,7 @@ sub parse_file_start {
     }
     elsif ($basefn eq 'Build.PL' && $self->{builder} eq 'Module::Build') {
         plan tests => 10;
-        my $authoremail = join ',', map { "'$_'" } @{$self->{author}};
-        $authoremail =~ s/'/\'/g;
+        my $authoremail = join(',', map { (my $x = $_) =~ s/'/\\'/g; "'$x'" } @{$self->{author}});
         
         $self->parse($mswb_re,
             "Min/Strict/Warning/Builder"
@@ -299,8 +298,7 @@ sub parse_file_start {
     }
     elsif ($basefn eq 'Makefile.PL' && $self->{builder} eq 'ExtUtils::MakeMaker') {
         plan tests => 10;
-        my $authoremail = join ',', map { "'$_'" } @{$self->{author}};
-        $authoremail =~ s/'/\'/g;
+        my $authoremail = join(',', map { (my $x = $_) =~ s/'/\\'/g; "'$x'" } @{$self->{author}});
         
         $self->parse($mswb_re,
             "Min/Strict/Warning/Builder"
@@ -349,8 +347,7 @@ sub parse_file_start {
        plan tests => 13;
        # do not quote authoremail combinations for Module::Install since
        # author is a string not an arrayref
-       my $authoremail = join ',', @{$self->{author}};
-       $authoremail =~ s/'/\'/g;
+       my $authoremail = join(',', map { (my $x = $_) =~ s/'/\\'/g; "'$x'" } @{$self->{author}});
        
         $self->parse($mswb_re,
             "Min/Strict/Warning/Builder"
@@ -360,12 +357,12 @@ sub parse_file_start {
             "name",
         );
 
-        $self->parse(qr{\Aall_from\s+\Q'$libmod';\E\n}ms,
-            "all_from",
+        $self->parse(qr{\Aauthor\s+\Q$authoremail;\E\n}ms,
+            "author",
         );
 
-        $self->parse(qr{\Aauthor\s+\Qq{$authoremail};\E\n}ms,
-            "author",
+        $self->parse(qr{\Aall_from\s+\Q'$libmod';\E\n}ms,
+            "all_from",
         );
 
         $self->parse(qr{\Alicense\s+\Q'$self->{license}';\E\n\n}ms,
